@@ -43,7 +43,7 @@ services:
       - gcode_files_bluey:/home/klippy/printer_data/gcodes
       - moonraker_data_bluey:/home/klippy/.moonraker_database
     devices:
-      - /dev/ttyUSB1:/dev/ttyUSB0
+      - /dev/ttyUSB1:/dev/ttyUSB1
 
 volumes: 
   moonraker_data_bingo:
