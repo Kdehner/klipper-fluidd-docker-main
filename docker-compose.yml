@@ -36,7 +36,7 @@ services:
       - SYS_NICE
     container_name: klipper_bluey
     ports:
-      - 7125:7125
+      - 7126:7125
     restart: unless-stopped
     volumes:      
       - ./config_bluey:/home/klippy/printer_data/config
@@ -44,22 +44,6 @@ services:
       - moonraker_data_bluey:/home/klippy/.moonraker_database
     devices:
       - /dev/ttyUSB1:/dev/ttyUSB0
-
-  fluidd:
-    image: kdehner/fluidd
-    build:
-      dockerfile: Dockerfile
-      context: frontend
-    restart: unless-stopped
-    container_name: fluidd
-    ports:
-      - 8010:80
-    depends_on: 
-      - klipper_bingo
-      - klipper_bluey
-    links:
-      - klipper_bingo:klipper_bingo
-      - klipper_bluey:klipper_bluey
 
 volumes: 
   moonraker_data_bingo:
