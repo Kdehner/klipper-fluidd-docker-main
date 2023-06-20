@@ -1,11 +1,11 @@
 version: '2'
 
 services:
-  klipper:
-    image: ghcr.io/anetdev/klipper-fluidd-docker-main/klipper-moonraker:main
-    # build:
-    #   dockerfile: ./klipper/Dockerfile
-    #   context: .
+  klipper_bingo:
+    image: kdehner/klipper-moonraker
+    build:
+      dockerfile: ./klipper/Dockerfile
+      context: .
     # if klipper cannot connect to the printer check permissions on rpi then add the group here
     # group_add:
     #   - "996"
@@ -13,21 +13,43 @@ services:
     privileged: true
     cap_add:
       - SYS_NICE
-    container_name: klipper
+    container_name: klipper_bingo
     ports:
       - 7125:7125
     restart: unless-stopped
     volumes:      
-      - klippy_config:/home/klippy/printer_data/config
-      - gcode_files:/home/klippy/printer_data/gcodes
-      - moonraker_data:/home/klippy/.moonraker_database
-      - /dev:/dev
-    # devices:
-    #   - /dev/ttyUSB0:/dev/ttyUSB0
+      - ./config_bingo:/home/klippy/printer_data/config
+      - gcode_files_bingo:/home/klippy/printer_data/gcodes
+      - moonraker_data_bingo:/home/klippy/.moonraker_database
+        # - /dev:/dev
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
 
+  klipper_bluey:
+    image: kdehner/klipper-moonraker
+    # if klipper cannot connect to the printer check permissions on rpi then add the group here
+    # group_add:
+    #   - "996"
+    #   - "998"
+    privileged: true
+    cap_add:
+      - SYS_NICE
+    container_name: klipper_bluey
+    ports:
+      - 7125:7125
+    restart: unless-stopped
+    volumes:      
+      - ./config_bluey:/home/klippy/printer_data/config
+      - gcode_files_bluey:/home/klippy/printer_data/gcodes
+      - moonraker_data_bluey:/home/klippy/.moonraker_database
+    devices:
+      - /dev/ttyUSB1:/dev/ttyUSB0
 
   fluidd:
-    image: ghcr.io/anetdev/klipper-fluidd-docker-main/fluidd:main
+    image: kdehner/fluidd
+    build:
+      dockerfile: Dockerfile
+      context: frontend
     restart: unless-stopped
     container_name: fluidd
     ports:
@@ -35,10 +57,11 @@ services:
     depends_on: 
       - klipper      
     links:
-      - klipper:klipper
-      
+      - klipper_bingo:klipper_bingo
+      - klipper_bluey:klipper_bluey
 
 volumes: 
-  moonraker_data:
-  klippy_config:
-  gcode_files:
+  moonraker_data_bingo:
+  moonraker_data_bluey:
+  gcode_files_bingo:
+  gcode_files_bluey:
