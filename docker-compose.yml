@@ -1,11 +1,8 @@
 version: '2'
 
 services:
-  klipper_bingo:
-    image: kdehner/klipper-moonraker
-    build:
-      dockerfile: ./klipper/Dockerfile
-      context: .
+  klipper:
+    image: ghcr.io/kdehner/klipper-moonraker-docker:main
     # if klipper cannot connect to the printer check permissions on rpi then add the group here
     # group_add:
     #   - "996"
@@ -13,40 +10,20 @@ services:
     privileged: true
     cap_add:
       - SYS_NICE
-    container_name: klipper_bingo
+    container_name: klipper
     ports:
       - 7125:7125
     restart: unless-stopped
     volumes:      
-      - ./config_bingo:/home/klippy/printer_data/config
+      - klippy_config:/home/klippy/printer_data/config
       - gcode_files_bingo:/home/klippy/printer_data/gcodes
       - moonraker_data_bingo:/home/klippy/.moonraker_database
         # - /dev:/dev
     devices:
-      - /dev/ttyUSB0:/dev/ttyUSB0
-
-  klipper_bluey:
-    image: kdehner/klipper-moonraker
-    # if klipper cannot connect to the printer check permissions on rpi then add the group here
-    # group_add:
-    #   - "996"
-    #   - "998"
-    privileged: true
-    cap_add:
-      - SYS_NICE
-    container_name: klipper_bluey
-    ports:
-      - 7126:7125
-    restart: unless-stopped
-    volumes:      
-      - ./config_bluey:/home/klippy/printer_data/config
-      - gcode_files_bluey:/home/klippy/printer_data/gcodes
-      - moonraker_data_bluey:/home/klippy/.moonraker_database
-    devices:
-      - /dev/ttyUSB1:/dev/ttyUSB1
-
 volumes: 
-  moonraker_data_bingo:
-  moonraker_data_bluey:
-  gcode_files_bingo:
-  gcode_files_bluey:
+  moonraker_data:
+  gcode_files:
+  klippy_config:
+    driver: local
+    device: ${HOME}/klippy_config
+    o: bind
