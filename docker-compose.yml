@@ -16,14 +16,18 @@ services:
     restart: unless-stopped
     volumes:      
       - klippy_config:/home/klippy/printer_data/config
-      - gcode_files_bingo:/home/klippy/printer_data/gcodes
-      - moonraker_data_bingo:/home/klippy/.moonraker_database
+      - gcode_files:/home/klippy/printer_data/gcodes
+      - moonraker_data:/home/klippy/.moonraker_database
         # - /dev:/dev
     devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+
 volumes: 
   moonraker_data:
   gcode_files:
   klippy_config:
     driver: local
-    device: ${HOME}/klippy_config
-    o: bind
+    driver_opts:
+      type: none
+      device: ${HOME}/klippy_config
+      o: bind
